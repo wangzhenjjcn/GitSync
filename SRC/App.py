@@ -32,39 +32,39 @@ class Application_ui(Frame):
 
         self.style = Style()
 
-        self.Command8Var = StringVar(value='Command5')
+        self.Command8Var = StringVar(value='|||')
         self.style.configure('TCommand8.TButton', font=('宋体',9))
-        self.Command8 = Button(self.top, text='Command5', textvariable=self.Command8Var, command=self.Command8_Cmd, style='TCommand8.TButton')
+        self.Command8 = Button(self.top, text='|||', textvariable=self.Command8Var, command=self.Command8_Cmd, style='TCommand8.TButton')
         self.Command8.setText = lambda x: self.Command8Var.set(x)
         self.Command8.text = lambda : self.Command8Var.get()
         self.Command8.place(relx=0.941, rely=0.03, relwidth=0.03, relheight=0.051)
 
-        self.Command7Var = StringVar(value='Command5')
+        self.Command7Var = StringVar(value='-')
         self.style.configure('TCommand7.TButton', font=('宋体',9))
-        self.Command7 = Button(self.top, text='Command5', textvariable=self.Command7Var, command=self.Command7_Cmd, style='TCommand7.TButton')
+        self.Command7 = Button(self.top, text='-', textvariable=self.Command7Var, command=self.Command7_Cmd, style='TCommand7.TButton')
         self.Command7.setText = lambda x: self.Command7Var.set(x)
         self.Command7.text = lambda : self.Command7Var.get()
         self.Command7.place(relx=0.906, rely=0.03, relwidth=0.03, relheight=0.051)
 
-        self.Command6Var = StringVar(value='Command5')
+        self.Command6Var = StringVar(value='O')
         self.style.configure('TCommand6.TButton', font=('宋体',9))
-        self.Command6 = Button(self.top, text='Command5', textvariable=self.Command6Var, command=self.Command6_Cmd, style='TCommand6.TButton')
+        self.Command6 = Button(self.top, text='O', textvariable=self.Command6Var, command=self.Command6_Cmd, style='TCommand6.TButton')
         self.Command6.setText = lambda x: self.Command6Var.set(x)
         self.Command6.text = lambda : self.Command6Var.get()
         self.Command6.place(relx=0.871, rely=0.03, relwidth=0.03, relheight=0.051)
 
-        self.Command5Var = StringVar(value='Command5')
+        self.Command5Var = StringVar(value='X')
         self.style.configure('TCommand5.TButton', font=('宋体',9))
-        self.Command5 = Button(self.top, text='Command5', textvariable=self.Command5Var, command=self.Command5_Cmd, style='TCommand5.TButton')
+        self.Command5 = Button(self.top, text='X', textvariable=self.Command5Var, command=self.Command5_Cmd, style='TCommand5.TButton')
         self.Command5.setText = lambda x: self.Command5Var.set(x)
         self.Command5.text = lambda : self.Command5Var.get()
         self.Command5.place(relx=0.836, rely=0.03, relwidth=0.03, relheight=0.051)
 
-        self.Text1Var = StringVar(value='Text1')
-        self.Text1 = Entry(self.top, textvariable=self.Text1Var, font=('宋体',9))
-        self.Text1.setText = lambda x: self.Text1Var.set(x)
-        self.Text1.text = lambda : self.Text1Var.get()
-        self.Text1.place(relx=0.596, rely=0.945, relwidth=0.398, relheight=0.041)
+        self.CommandTextVar = StringVar(value='')
+        self.CommandText = Entry(self.top, textvariable=self.CommandTextVar, font=('宋体',9))
+        self.CommandText.setText = lambda x: self.CommandTextVar.set(x)
+        self.CommandText.text = lambda : self.CommandTextVar.get()
+        self.CommandText.place(relx=0.596, rely=0.945, relwidth=0.398, relheight=0.041)
 
         self.Command4Var = StringVar(value='Command4')
         self.style.configure('TCommand4.TButton', font=('宋体',9))
@@ -88,15 +88,15 @@ class Application_ui(Frame):
         self.ControlPannelFrame = LabelFrame(self.top, text='Control', style='TControlPannelFrame.TLabelframe')
         self.ControlPannelFrame.place(relx=0.012, rely=0.259, relwidth=0.194, relheight=0.668)
 
-        self.style.configure('TAPP.TLabelframe', font=('宋体',9))
-        self.style.configure('TAPP.TLabelframe.Label', font=('宋体',9))
-        self.APP = LabelFrame(self.top, text='GITHUB TASK', style='TAPP.TLabelframe')
-        self.APP.place(relx=0.012, rely=0.01, relwidth=0.194, relheight=0.24)
+        self.style.configure('TUserFrame.TLabelframe', font=('宋体',9))
+        self.style.configure('TUserFrame.TLabelframe.Label', font=('宋体',9))
+        self.UserFrame = LabelFrame(self.top, text='User', style='TUserFrame.TLabelframe')
+        self.UserFrame.place(relx=0.012, rely=0.01, relwidth=0.194, relheight=0.24)
 
-        self.LogFrameVar = StringVar(value='')
-        self.LogFrameFont = Font(font=('宋体',9))
-        self.LogFrame = Listbox(self.InfoFrame, listvariable=self.LogFrameVar, font=self.LogFrameFont)
-        self.LogFrame.place(relx=0.029, rely=0.036, relwidth=0.941, relheight=0.944)
+        self.LogListVar = StringVar(value='LogList')
+        self.LogListFont = Font(font=('宋体',9))
+        self.LogList = Listbox(self.InfoFrame, listvariable=self.LogListVar, font=self.LogListFont)
+        self.LogList.place(relx=0.029, rely=0.036, relwidth=0.941, relheight=0.944)
 
         self.Command10Var = StringVar(value='Command1')
         self.style.configure('TCommand10.TButton', font=('宋体',9))
@@ -125,50 +125,53 @@ class Application_ui(Frame):
         self.TaskList.place(relx=0.031, rely=0.037, relwidth=0.938, relheight=0.773)
 
         self.Text3Var = StringVar(value='Text2')
-        self.Text3 = Entry(self.APP, textvariable=self.Text3Var, font=('宋体',9))
+        self.Text3 = Entry(self.UserFrame, textvariable=self.Text3Var, font=('宋体',9))
         self.Text3.setText = lambda x: self.Text3Var.set(x)
         self.Text3.text = lambda : self.Text3Var.get()
         self.Text3.place(relx=0.211, rely=0.332, relwidth=0.668, relheight=0.13)
 
         self.Text2Var = StringVar(value='Text2')
-        self.Text2 = Entry(self.APP, textvariable=self.Text2Var, font=('宋体',9))
+        self.Text2 = Entry(self.UserFrame, textvariable=self.Text2Var, font=('宋体',9))
         self.Text2.setText = lambda x: self.Text2Var.set(x)
         self.Text2.text = lambda : self.Text2Var.get()
         self.Text2.place(relx=0.211, rely=0.166, relwidth=0.668, relheight=0.13)
 
         self.Command2Var = StringVar(value='Command1')
         self.style.configure('TCommand2.TButton', font=('宋体',9))
-        self.Command2 = Button(self.APP, text='Command1', textvariable=self.Command2Var, command=self.Command2_Cmd, style='TCommand2.TButton')
+        self.Command2 = Button(self.UserFrame, text='Command1', textvariable=self.Command2Var, command=self.Command2_Cmd, style='TCommand2.TButton')
         self.Command2.setText = lambda x: self.Command2Var.set(x)
         self.Command2.text = lambda : self.Command2Var.get()
         self.Command2.place(relx=0.543, rely=0.746, relwidth=0.366, relheight=0.171)
 
         self.Command1Var = StringVar(value='Command1')
         self.style.configure('TCommand1.TButton', font=('宋体',9))
-        self.Command1 = Button(self.APP, text='Command1', textvariable=self.Command1Var, command=self.Command1_Cmd, style='TCommand1.TButton')
+        self.Command1 = Button(self.UserFrame, text='Command1', textvariable=self.Command1Var, command=self.Command1_Cmd, style='TCommand1.TButton')
         self.Command1.setText = lambda x: self.Command1Var.set(x)
         self.Command1.text = lambda : self.Command1Var.get()
         self.Command1.place(relx=0.06, rely=0.746, relwidth=0.366, relheight=0.171)
 
         self.Label2Var = StringVar(value='Label1')
         self.style.configure('TLabel2.TLabel', anchor='w', font=('宋体',9))
-        self.Label2 = Label(self.APP, text='Label1', textvariable=self.Label2Var, style='TLabel2.TLabel')
+        self.Label2 = Label(self.UserFrame, text='Label1', textvariable=self.Label2Var, style='TLabel2.TLabel')
         self.Label2.setText = lambda x: self.Label2Var.set(x)
         self.Label2.text = lambda : self.Label2Var.get()
         self.Label2.place(relx=0.03, rely=0.332, relwidth=0.155, relheight=0.13)
 
         self.Label1Var = StringVar(value='Label1')
         self.style.configure('TLabel1.TLabel', anchor='w', font=('宋体',9))
-        self.Label1 = Label(self.APP, text='Label1', textvariable=self.Label1Var, style='TLabel1.TLabel')
+        self.Label1 = Label(self.UserFrame, text='Label1', textvariable=self.Label1Var, style='TLabel1.TLabel')
         self.Label1.setText = lambda x: self.Label1Var.set(x)
         self.Label1.text = lambda : self.Label1Var.get()
         self.Label1.place(relx=0.03, rely=0.166, relwidth=0.155, relheight=0.13)
+
+
 
 
 class Application(Application_ui):
     #这个类实现具体的事件处理回调函数。界面生成代码在Application_ui中。
     def __init__(self, master=None):
         Application_ui.__init__(self, master)
+        self.initData()
 
     def Command8_Cmd(self, event=None):
         #TODO, Please finish the function here!
@@ -209,6 +212,51 @@ class Application(Application_ui):
     def Command1_Cmd(self, event=None):
         #TODO, Please finish the function here!
         pass
+
+
+
+
+    def initData(self):
+        self.app_dir=os.path.dirname(os.path.realpath(sys.argv[0]))
+         
+
+
+    def commit(self,sourcePath):
+        self.InfoFrame
+        self.repo = Repo(sourcePath, search_parent_directories=True)
+
+        print("status:%s"%self.repo.git.status())
+        self.remote = self.repo.remote()
+        origin=self.repo.remotes.origin
+        self.index = self.repo.index
+        changedFiles = [ item.a_path for item in self.repo.index.diff(None) ]
+        untracked_files=self.repo.untracked_files
+        self.index.add(changedFiles)
+        print("add files 2 master : %s"%changedFiles)
+        self.index.add(untracked_files)
+        print("add untracked_files 2 master : %s"%untracked_files)
+        if len(changedFiles)+len(untracked_files)>0:
+            print("new commit:%s"%str(self.fileindex))
+            commsg="a new version"
+            if len(untracked_files)>0:
+                commsg="new:%s,video current id:%s"%(str(untracked_files),str(self.fileindex))
+            self.index.commit(commsg)
+            print("status:%s"%self.repo.git.status())
+        self.logVar.set("commit")
+        if "Your branch is ahead of" in self.repo.git.status():
+            self.logVar.set("pushing")
+            print("pushing:")
+            self.repo.remote().push()
+        if "Your branch is up to date" in self.repo.git.status():
+            self.logVar.set("updated,Done")
+       
+        pass
+
+
+
+
+
+
 
 if __name__ == "__main__":
     top = Tk()
