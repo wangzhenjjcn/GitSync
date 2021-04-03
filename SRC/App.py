@@ -2,6 +2,7 @@
 #-*- coding:utf-8 -*-
 
 import os, sys
+from git import Repo
 if sys.version_info[0] == 2:
     from Tkinter import *
     from tkFont import Font
@@ -93,7 +94,7 @@ class Application_ui(Frame):
         self.UserFrame = LabelFrame(self.top, text='User', style='TUserFrame.TLabelframe')
         self.UserFrame.place(relx=0.012, rely=0.01, relwidth=0.194, relheight=0.24)
 
-        self.LogListVar = StringVar(value='LogList')
+        self.LogListVar = StringVar(value='')
         self.LogListFont = Font(font=('宋体',9))
         self.LogList = Listbox(self.InfoFrame, listvariable=self.LogListVar, font=self.LogListFont)
         self.LogList.place(relx=0.029, rely=0.036, relwidth=0.941, relheight=0.944)
@@ -214,47 +215,155 @@ class Application(Application_ui):
         pass
 
 
+    def handler_adaptor(self, fun,  **kwds):
+        return lambda event, fun=fun, kwds=kwds: fun(event, **kwds)
+
+    def handler(self, event, name, item, option, item_type, data, log):
+        self.Log("UI交互:控件["+name+"]类型["+item_type+"]操作["+
+              option+"]数据["+str(data)+"]提示信息["+str(log)+"]")
+        print("UI交互:控件["+name+"]类型["+item_type+"]操作["+
+              option+"]数据["+str(data)+"]提示信息["+str(log)+"]")
 
 
     def initData(self):
         self.app_dir=os.path.dirname(os.path.realpath(sys.argv[0]))
+        self.Log("App Run at:%s"%self.app_dir)
          
 
+    def Log(self,info):
+        # if self.LoggerLevel<1999:
+        #     return
+        _info = str(info)
+        # if len(info) > 110:
+        #     _info = str(info)[0:50]+"..."+str(info)[len(info)-50:len(info)]
+        self.LogList.insert(END, " "+str(_info))
+        self.LogList.itemconfig(END, bg="#C3C3C3")
+        self.LogList.see(END)
+        # self.Log2File(info,None)
+        pass
 
-    def commit(self,sourcePath):
-        self.InfoFrame
-        self.repo = Repo(sourcePath, search_parent_directories=True)
+    def LogSuccessful(self, info, event=None):
+        # if self.LoggerLevel<9:
+        #     return
+        _info = str(info)
+        # if len(info) > 110:
+        #     _info = str(info)[0:50]+"..."+str(info)[len(info)-50:len(info)]
+        self.LogList.insert(END, str(_info))
+        self.LogList.itemconfig(END, bg="#00FF00")
+        self.LogList.itemconfig(END, fg="#000000")
+        self.LogList.see(END)
 
-        print("status:%s"%self.repo.git.status())
-        self.remote = self.repo.remote()
-        origin=self.repo.remotes.origin
-        self.index = self.repo.index
-        changedFiles = [ item.a_path for item in self.repo.index.diff(None) ]
-        untracked_files=self.repo.untracked_files
-        self.index.add(changedFiles)
+    def LogWarning(self, info, event=None):
+        # if self.LoggerLevel<199:
+        #     return
+        _info = str(info)
+        # if len(info) > 110:
+            # _info = str(info)[0:50]+"..."+str(info)[len(info)-50:len(info)]
+        self.LogList.insert(END, "   "+str(_info))
+        self.LogList.itemconfig(END, bg="#FFFF00")
+        self.LogList.itemconfig(END, fg="#000000")
+        self.LogList.see(END)
+        # self.Log2File(info,None)
+
+    def LogError(self, info, event=None):
+        # if self.LoggerLevel<19:
+        #     return
+        _info = str(info)
+        # if len(info) > 100:
+        #     _info = str(info)[0:100]+"\n"+str(info)[len(info)-100:len(info)]
+        #     if len(info) > 200:
+        #         _info = str(info)[0:100]+"\n"+str(info)[100:200]+"\n"+str(info)[len(info)-200:len(info)]
+        #         if len(info) > 300:
+        #             _info = str(info)[0:100]+"\n"+str(info)[100:200]+"\n"+str(info)[200:300]+"\n"+str(info)[len(info)-300:len(info)] 
+        self.LogList.insert(END, str(_info))
+        self.LogList.itemconfig(END, bg="#FF0000")
+        self.LogList.itemconfig(END, fg="#FFFFFF")
+        self.LogList.see(END)
+        # self.Log2File(info,None)
+        pass
+
+    def CheckPath(self, filename):
+        try:
+            print("  check file>>> %s "% filename)
+            _file = filename
+            if None == _file:
+                print("   file>>> %s >>>None"% filename)
+                return False
+            if _file == "":
+                print("   file>>> %s >>>Empty"% filename)
+                return False
+            if len(str(_file)) < 3:
+                print("   file>>> %s >>>Not a File"% filename)
+                return False
+            if not os.path.exists(_file):
+                print("   file>>> %s >>>Not Exists"% filename)
+                return False
+            if os.path.isfile(filename):
+                print("   file>>> %s >>>Is File"% filename)
+                return False
+            print("   path>>> %s >>>Success"% filename)
+            return True
+        except Exception as e:
+            print(e)
+            return False
+
+    def commit(self,gitPath):
+        self.Log("Commit Request:%s"%str(gitPath))
+        print("Commit Request:%s"%str(gitPath))
+        repo = Repo(gitPath, search_parent_directories=True)
+        self.Log("RepoStatus:%s"%self.repo.git.status())
+        print("RepoStatus:%s"%self.repo.git.status())
+        remote = repo.remote()
+        origin = repo.remotes.origin
+        index  = repo.index
+        changedFiles = [ item.a_path for item in repo.index.diff(None) ]
+        self.Log("ChangedFiles:%s"%changedFiles)
+        untracked_files = repo.untracked_files
+        self.Log("UntrackedFiles:%s"%untracked_files)
+        index.add(changedFiles)
         print("add files 2 master : %s"%changedFiles)
-        self.index.add(untracked_files)
+        self.LogSuccessful("modify added file:%s"%changedFiles)
+        index.add(untracked_files)
         print("add untracked_files 2 master : %s"%untracked_files)
+        self.LogSuccessful("added new file:%s"%untracked_files)
+        commit_msg=""
         if len(changedFiles)+len(untracked_files)>0:
             print("new commit:%s"%str(self.fileindex))
-            commsg="a new version"
+            commit_msg="a new version"
             if len(untracked_files)>0:
-                commsg="new:%s,video current id:%s"%(str(untracked_files),str(self.fileindex))
-            self.index.commit(commsg)
-            print("status:%s"%self.repo.git.status())
-        self.logVar.set("commit")
+                commit_msg="new:%s,video current id:%s"%(str(untracked_files),str(self.fileindex))
+            self.index.commit(commit_msg)
+            self.LogSuccessful("commit:%s"%commit_msg)
         if "Your branch is ahead of" in self.repo.git.status():
-            self.logVar.set("pushing")
-            print("pushing:")
+            self.LogWarning("Push:%s"%self.repo.git.status())
             self.repo.remote().push()
         if "Your branch is up to date" in self.repo.git.status():
-            self.logVar.set("updated,Done")
-       
+            self.LogSuccessful("Your branch is up to date!:%s"%self.repo.git.status())
         pass
 
 
-
-
+    def getV2rayData(self):
+        self.Log("Start to check V2ray Links:")
+        defaulturl = "http://music.sonimei.cn/"
+        defaultHeader = {
+            'upgrade-insecure-requests': "1",
+            'user-agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36",
+            'dnt': "1",
+            'accept': "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+            'accept-encoding': "gzip, deflate",
+            'accept-language': "zh-CN,zh;q=0.9,en;q=0.8,zh-TW;q=0.7,ja;q=0.6",
+            'cache-control': "no-cache"
+            }
+        ajaxheaders = {
+            'upgrade-insecure-requests': "1",
+            'user-agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36",
+            'dnt': "1",
+            'accept-encoding': "gzip, deflate",
+            'x-requested-with': "XMLHttpRequest",
+            'accept-language': "zh-CN,zh;q=0.9,en;q=0.8,zh-TW;q=0.7,ja;q=0.6",
+            'cache-control': "no-cache",
+            'accept': "application/json, text/javascript, */*; q=0.01",
+            }
 
 
 
