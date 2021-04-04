@@ -3,6 +3,9 @@
 
 import os, sys
 from git import Repo
+import json
+import requests
+import base64
 if sys.version_info[0] == 2:
     from Tkinter import *
     from tkFont import Font
@@ -196,14 +199,17 @@ class Application(Application_ui):
 
     def Command10_Cmd(self, event=None):
         #TODO, Please finish the function here!
+        self.getSSRData()
         pass
 
     def Command9_Cmd(self, event=None):
         #TODO, Please finish the function here!
+        self.getSSData()
         pass
 
     def Command3_Cmd(self, event=None):
         #TODO, Please finish the function here!
+        self.getV2rayData()
         pass
 
     def Command2_Cmd(self, event=None):
@@ -344,7 +350,11 @@ class Application(Application_ui):
 
     def getV2rayData(self):
         self.Log("Start to check V2ray Links:")
-        defaulturl = "http://music.sonimei.cn/"
+        c="CN,HK,TW"
+        speedlow="1"
+        speedhigh="300"
+        linktype="vmess"
+        defaulturl = "http://proxypoolsstest.herokuapp.com/clash/proxies?c=%s&speed=%s,%s&type=%s"%(c,speedlow,speedhigh,linktype)
         defaultHeader = {
             'upgrade-insecure-requests': "1",
             'user-agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36",
@@ -364,7 +374,155 @@ class Application(Application_ui):
             'cache-control': "no-cache",
             'accept': "application/json, text/javascript, */*; q=0.01",
             }
+        webSession = requests.session()
+        responseRes = webSession.get(defaulturl, headers=ajaxheaders, verify=False)
+        print(responseRes.text)
+        datas =str(responseRes.text).split("- {")
+        datajson={}
+        datastr="{"
+        i=0
+        for data in datas:
+            if "}" in data:
+                datastr= datastr+"\""+str(i) +"\":{"+data+","
+            i+=1
+            continue
+        datastr=datastr[0:len(datastr)-1]
+        datastr+="}"
+        print(datastr)
+        datajson=json.loads(datastr)
+        print(datajson)
+        
+        if responseRes.status_code != 200:
+            return []
 
+    def getSSData(self):
+        self.Log("Start to check V2ray Links:")
+        c="HK"
+        speedlow="15"
+        speedhigh="300"
+        linktype="ss"
+        defaulturl = "http://proxypoolsstest.herokuapp.com/clash/proxies?c=%s&speed=%s,%s&type=%s"%(c,speedlow,speedhigh,linktype)
+        defaultHeader = {
+            'upgrade-insecure-requests': "1",
+            'user-agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36",
+            'dnt': "1",
+            'accept': "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+            'accept-encoding': "gzip, deflate",
+            'accept-language': "zh-CN,zh;q=0.9,en;q=0.8,zh-TW;q=0.7,ja;q=0.6",
+            'cache-control': "no-cache"
+            }
+        ajaxheaders = {
+            'upgrade-insecure-requests': "1",
+            'user-agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36",
+            'dnt': "1",
+            'accept-encoding': "gzip, deflate",
+            'x-requested-with': "XMLHttpRequest",
+            'accept-language': "zh-CN,zh;q=0.9,en;q=0.8,zh-TW;q=0.7,ja;q=0.6",
+            'cache-control': "no-cache",
+            'accept': "application/json, text/javascript, */*; q=0.01",
+            }
+        webSession = requests.session()
+        responseRes = webSession.get(defaulturl, headers=ajaxheaders, verify=False)
+        print(responseRes.text)
+        datas =str(responseRes.text).split("- {")
+        datajson={}
+        datastr="{"
+        i=0
+        for data in datas:
+            if "}" in data:
+                datastr= datastr+"\""+str(i) +"\":{"+data+","
+            i+=1
+            continue
+        datastr=datastr[0:len(datastr)-1]
+        datastr+="}"
+        print(datastr)
+        datajson=json.loads(datastr)
+        print(datajson)
+        
+        for ss in datajson: 
+            resault='ss://'+encodeBase64(str(datajson[str(ss)]['cipher'])+':'+  str(datajson[str(ss)]['password']) +'@'+str(datajson[str(ss)]['server']) +':'+str(datajson[str(ss)]['port']) ) 
+            print(resault)
+        
+            # data_=data
+            # data_['protocol']='origin'
+            # data_['obfs']='plain'
+            # data_['password_base64']=encodeBase64(data['password'])
+            # # obfsparam=obfsparam_base64&protoparam=protoparam_base64&remarks=remarks_base64&group=group_base64 
+            # tmpdata=data_['server']+':'+data_['port']+':'+data_['protocol']+':'+data_['method']+':'+data_['obfs']+':'+data_['password_base64']+'/?'+encodeBase64("obfsparam=&protoparam=&remarks=&group="+encodeBase64("AAAA"))
+            # resault='ssr://'+encodeBase64(tmpdata)
+        
+        
+        
+        if responseRes.status_code != 200:
+            return []
+
+    def getSSRData(self):
+        self.Log("Start to check V2ray Links:")
+        c="HK"
+        speedlow="15"
+        speedhigh="300"
+        linktype="ssr"
+        defaulturl = "http://proxypoolsstest.herokuapp.com/clash/proxies?c=%s&speed=%s,%s&type=%s"%(c,speedlow,speedhigh,linktype)
+        defaultHeader = {
+            'upgrade-insecure-requests': "1",
+            'user-agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36",
+            'dnt': "1",
+            'accept': "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+            'accept-encoding': "gzip, deflate",
+            'accept-language': "zh-CN,zh;q=0.9,en;q=0.8,zh-TW;q=0.7,ja;q=0.6",
+            'cache-control': "no-cache"
+            }
+        ajaxheaders = {
+            'upgrade-insecure-requests': "1",
+            'user-agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36",
+            'dnt': "1",
+            'accept-encoding': "gzip, deflate",
+            'x-requested-with': "XMLHttpRequest",
+            'accept-language': "zh-CN,zh;q=0.9,en;q=0.8,zh-TW;q=0.7,ja;q=0.6",
+            'cache-control': "no-cache",
+            'accept': "application/json, text/javascript, */*; q=0.01",
+            }
+        webSession = requests.session()
+        responseRes = webSession.get(defaulturl, headers=ajaxheaders, verify=False)
+        print(responseRes.text)
+        datas =str(responseRes.text).split("- {")
+        datajson={}
+        datastr="{"
+        i=0
+        for data in datas:
+            if "}" in data:
+                datastr= datastr+"\""+str(i) +"\":{"+data+","
+            i+=1
+            continue
+        datastr=datastr[0:len(datastr)-1]
+        datastr+="}"
+        print(datastr)
+        datastr=datastr.replace(" ","")
+        datajson=json.loads(datastr)
+        print(datajson)
+        
+        for ssr in datajson: 
+            # resault='ss://'+encodeBase64(str(datajson[str(ss)]['cipher'])+':'+  str(datajson[str(ss)]['password']) +'@'+str(datajson[str(ss)]['server']) +':'+str(datajson[str(ss)]['port']) ) 
+        
+            data_=datajson[str(ssr)]
+            data_['password_base64']=encodeBase64(str(data_['password']))
+            # obfsparam=obfsparam_base64&protoparam=protoparam_base64&remarks=remarks_base64&group=group_base64 
+            tmpdata=str(data_['server'])+':'+str(data_['port'])+':'+str(data_['protocol'])+':'+str(data_['cipher'])+':'+str(data_['obfs'])+':'+str(data_['password_base64'])+'/?'+encodeBase64("obfsparam=myazuressr&protoparam=myazure&remarks=&group="+encodeBase64("AAAA"))
+            resault='ssr://'+encodeBase64(tmpdata)
+            print(resault)
+        
+        # ssr://server:port:protocol:method:obfs:password_base64/?params_base64
+        
+        if responseRes.status_code != 200:
+            return []
+
+
+def decodeBase64(data):
+    return  str(base64.b64decode((data.replace('-','+').replace('_','/')).encode('utf-8')),'utf-8')
+        
+
+def encodeBase64(data):
+    return  str(base64.b64encode(data.encode('utf-8')),'utf-8').replace('+','-').replace('/','_')
 
 
 if __name__ == "__main__":
